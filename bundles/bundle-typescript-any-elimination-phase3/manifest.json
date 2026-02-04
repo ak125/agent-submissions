@@ -1,0 +1,30 @@
+{
+  "bundleId": "bundle-typescript-any-elimination-phase3",
+  "version": "1.0.0",
+  "agentId": "main",
+  "priority": "P1",
+  "job": {
+    "job_id": "typescript-any-elimination-phase3",
+    "agent_id": "main",
+    "intent": "Eliminate 'any' types in notifications.gateway.ts (4) + cache.service.ts (3) - Phase 3 of 933",
+    "scope": "backend/src/notifications/ + backend/src/cache/ + backend/src/types/",
+    "timestamp": "2026-02-04T23:19:00.000Z"
+  },
+  "changes": {
+    "filesModified": 2,
+    "filesAdded": 1,
+    "linesChanged": 35,
+    "additions": 50,
+    "deletions": 12
+  },
+  "signature": {
+    "algorithm": "HMAC-SHA256",
+    "hash": "placeholder-will-be-computed",
+    "signedAt": "2026-02-04T23:19:00.000Z"
+  },
+  "constraints": {
+    "maxLinesChanged": 500,
+    "maxFilesModified": 10,
+    "forbiddenPatterns": ["exec_sql"]
+  }
+}
