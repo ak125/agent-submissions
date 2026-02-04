@@ -1,0 +1,94 @@
+diff --git a/frontend/app/routes/products.catalog.tsx b/frontend/app/routes/products.catalog.tsx
+index abc123..def456 100644
+--- a/frontend/app/routes/products.catalog.tsx
++++ b/frontend/app/routes/products.catalog.tsx
+@@ -37,6 +37,7 @@ import {
+ import { Error404 } from "~/components/errors/Error404";
+ import { getInternalApiUrl } from "~/utils/internal-api.server";
++import { catalogQuerySchema } from "~/schemas/catalog.schema";
+ 
+ /**
+  * 🔍 SEO Meta Tags - Catalogue produits (accès restreint)
+@@ -105,12 +106,29 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
+   }
+ 
+   const url = new URL(request.url);
+-  const enhanced = url.searchParams.get("enhanced") === "true";
+-  const searchTerm = url.searchParams.get("search") || "";
+-  const brand = url.searchParams.get("brand") || "";
+-  const category = url.searchParams.get("category") || "";
+-  const activeOnly = url.searchParams.get("active") === "true";
+-  const limit = Math.min(parseInt(url.searchParams.get("limit") || "24"), 100);
+-  const page = parseInt(url.searchParams.get("page") || "1");
++  
++  // 🔒 Validate query params with Zod
++  const rawParams = Object.fromEntries(url.searchParams.entries());
++  const parseResult = catalogQuerySchema.safeParse(rawParams);
++
++  if (!parseResult.success) {
++    console.error("Invalid catalog query params:", parseResult.error.format());
++    // Fail-safe: return empty catalog with error message
++    return json<CatalogData>({
++      user: { id: user.id, name: userName, level: userLevel, role: userRole },
++      products: [],
++      pagination: { total: 0, page: 1, limit: 24, totalPages: 0 },
++      filters: { searchTerm: "", activeOnly: false },
++      enhanced: false,
++      error: "Paramètres de recherche invalides. Veuillez réessayer.",
++    });
++  }
++
++  // Extract validated params
++  const {
++    search: searchTerm,
++    brand,
++    category,
++    page,
++    limit,
++    active: activeOnly,
++    enhanced,
++  } = parseResult.data;
+ 
+   const baseUrl = getInternalApiUrl("");
+ 
+diff --git a/frontend/app/schemas/catalog.schema.ts b/frontend/app/schemas/catalog.schema.ts
+new file mode 100644
+index 0000000..abc123
+--- /dev/null
++++ b/frontend/app/schemas/catalog.schema.ts
+@@ -0,0 +1,29 @@
++import { z } from "zod";
++
++/**
++ * 🔒 Catalog Query Parameters Schema
++ * 
++ * Validates and sanitizes query params for the products catalog loader.
++ * Prevents injection attacks, type coercion issues, and DoS via extreme values.
++ * 
++ * @example
++ * ```typescript
++ * const result = catalogQuerySchema.safeParse(queryParams);
++ * if (result.success) {
++ *   const { page, limit, search } = result.data;
++ * }
++ * ```
++ */
++export const catalogQuerySchema = z.object({
++  // Search & Filtering (max length to prevent abuse)
++  search: z.string().max(200).optional().default(""),
++  brand: z.string().max(100).optional().default(""),
++  category: z.string().max(100).optional().default(""),
++  
++  // Pagination (safe bounds: 1-9999 pages, 1-100 items/page)
++  page: z.coerce.number().int().positive().max(9999).optional().default(1),
++  limit: z.coerce.number().int().positive().min(1).max(100).optional().default(24),
++  
++  // Boolean flags (strict enum validation)
++  active: z.enum(["true", "false"]).optional().transform(val => val === "true"),
++  enhanced: z.enum(["true", "false"]).optional().transform(val => val === "true"),
++});
++
++/**
++ * TypeScript type inferred from the schema
++ */
++export type CatalogQuery = z.infer<typeof catalogQuerySchema>;

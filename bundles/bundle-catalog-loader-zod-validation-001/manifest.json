@@ -1,0 +1,30 @@
+{
+  "bundleId": "bundle-catalog-loader-zod-validation-001",
+  "version": "1.0.0",
+  "agentId": "main",
+  "priority": "P1",
+  "job": {
+    "job_id": "catalog-loader-zod-validation",
+    "agent_id": "main",
+    "intent": "Add Zod validation to products.catalog loader for security and data integrity",
+    "scope": "frontend/app/routes/products.catalog.tsx + frontend/app/schemas/catalog.schema.ts (new)",
+    "timestamp": "2026-02-04T22:55:00.000Z"
+  },
+  "changes": {
+    "filesModified": 1,
+    "filesAdded": 1,
+    "linesChanged": 45,
+    "additions": 43,
+    "deletions": 2
+  },
+  "signature": {
+    "algorithm": "HMAC-SHA256",
+    "hash": "placeholder-will-be-computed",
+    "signedAt": "2026-02-04T22:55:00.000Z"
+  },
+  "constraints": {
+    "maxLinesChanged": 500,
+    "maxFilesModified": 10,
+    "forbiddenPatterns": ["exec_sql", "process.env.DATABASE", "require("]
+  }
+}

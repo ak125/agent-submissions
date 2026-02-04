@@ -1,0 +1,25 @@
+{
+  "enforced": {
+    "maxLinesChanged": 500,
+    "maxFilesModified": 10,
+    "forbiddenPatterns": ["exec_sql", "process.env.DATABASE", "require("],
+    "requiredReview": true
+  },
+  "actual": {
+    "linesChanged": 45,
+    "filesModified": 1,
+    "filesAdded": 1,
+    "patternsDetected": [],
+    "breakingChanges": false
+  },
+  "compliance": {
+    "RULE-H3": "READ-ONLY respected (bundle submission via agent-submissions/)",
+    "RULE-H4": "NO direct push (awaiting human approval + CI validation)",
+    "maxConstraints": "PASSED (45/500 lines, 2/10 files)",
+    "securityReview": "Recommended (input validation + new schema file)"
+  },
+  "dependencies": {
+    "zod": "Already present in package.json (Remix standard stack)",
+    "newPackages": []
+  }
+}
