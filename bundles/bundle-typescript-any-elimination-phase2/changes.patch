@@ -1,0 +1,183 @@
+diff --git a/backend/src/types/database.types.ts b/backend/src/types/database.types.ts
+new file mode 100644
+index 0000000..abc123
+--- /dev/null
++++ b/backend/src/types/database.types.ts
+@@ -0,0 +1,42 @@
++/**
++ * 🔒 Database Entity Types
++ * 
++ * Maps raw Supabase database columns to type-safe interfaces.
++ * Eliminates 'any' types in data mapping and CRUD operations.
++ * 
++ * @module types/database
++ */
++
++/**
++ * Raw database row from xtr_customer table
++ */
++export interface DbCustomer {
++  customer_id: string;
++  customer_email: string;
++  customer_firstname?: string;
++  customer_lastname?: string;
++  customer_phone?: string;
++  customer_is_active: boolean;
++  customer_is_pro: boolean;
++  customer_level: number;
++  customer_created_at: string;
++  customer_updated_at?: string;
++}
++
++/**
++ * Type-safe update payload for customer table
++ */
++export interface CustomerUpdateData {
++  customer_email?: string;
++  customer_firstname?: string;
++  customer_lastname?: string;
++  customer_phone?: string;
++  customer_is_active?: boolean;
++  customer_is_pro?: boolean;
++  customer_level?: number;
++  customer_updated_at?: Date;
++}
++
++/**
++ * Fetch/Network error with common error properties
++ */
++export interface FetchError extends Error {
++  name: 'TimeoutError' | 'AbortError' | 'TypeError' | string;
++  code?: string;
++  errno?: string;
++  type?: string;
++}
+diff --git a/backend/src/database/services/user-data.service.ts b/backend/src/database/services/user-data.service.ts
+index abc123..def456 100644
+--- a/backend/src/database/services/user-data.service.ts
++++ b/backend/src/database/services/user-data.service.ts
+@@ -2,6 +2,7 @@ import { TABLES } from '@repo/database-types';
+ import { Injectable, NotFoundException } from '@nestjs/common';
+ import { SupabaseBaseService } from './supabase-base.service';
+ import { ConfigService } from '@nestjs/config';
++import { DbCustomer, CustomerUpdateData } from '../../types/database.types';
+ 
+ export interface User {
+   id: string;
+@@ -104,7 +105,7 @@ export class UserDataService extends SupabaseBaseService {
+    */
+   async updateUser(userId: string, updates: Partial<User>): Promise<User> {
+     try {
+-      const updateData: any = {};
++      const updateData: CustomerUpdateData = {};
+ 
+       if (updates.email) updateData.customer_email = updates.email;
+       if (updates.firstName) updateData.customer_firstname = updates.firstName;
+@@ -137,7 +138,7 @@ export class UserDataService extends SupabaseBaseService {
+   /**
+    * Mappe les données de la DB vers le modèle User
+    */
+-  private mapToUser(dbData: any): User {
++  private mapToUser(dbData: DbCustomer): User {
+     return {
+       id: dbData.customer_id,
+       email: dbData.customer_email,
+diff --git a/backend/src/database/services/supabase-base.service.ts b/backend/src/database/services/supabase-base.service.ts
+index abc123..def456 100644
+--- a/backend/src/database/services/supabase-base.service.ts
++++ b/backend/src/database/services/supabase-base.service.ts
+@@ -9,6 +9,7 @@ import {
+   SupabaseRpcError,
+   RpcBlockedError,
+ } from '../../security/rpc-gate/rpc-gate.errors';
++import { FetchError } from '../../types/database.types';
+ 
+ interface CircuitBreakerState {
+   failures: number;
+@@ -186,9 +187,9 @@ export abstract class SupabaseBaseService {
+             const response = await undiciFetch(
+               url as string,
+               {
+                 ...init,
+                 signal: signal,
+-              } as any,
++              } as RequestInit,
+             );
+             return response as unknown as Response;
+-          } catch (error: any) {
++          } catch (error) {
++            const fetchError = error as FetchError;
+             if (
+-              error.name === 'TimeoutError' ||
+-              error.name === 'AbortError' ||
+-              error.code === 'UND_ERR_CONNECT_TIMEOUT'
++              fetchError.name === 'TimeoutError' ||
++              fetchError.name === 'AbortError' ||
++              fetchError.code === 'UND_ERR_CONNECT_TIMEOUT'
+             ) {
+               this.logger.error(`❌ Supabase Request Timeout (15s) for ${url}`);
+               throw new Error('Supabase Request Timeout (15s)');
+             }
+-            throw error;
++            throw fetchError;
+           } finally {
+             supabaseSemaphore.release();
+           }
+@@ -280,15 +284,16 @@ export abstract class SupabaseBaseService {
+         this.onSuccess();
+         return result;
+-      } catch (error: any) {
+-        lastError = error;
++      } catch (error) {
++        const fetchError = error as FetchError;
++        lastError = fetchError;
+ 
+         // Vérifier le type d'erreur pour décider si on retry
+         const isCloudflareError =
+-          error?.message?.includes('500 Internal Server Error') ||
+-          error?.message?.includes('cloudflare');
++          fetchError?.message?.includes('500 Internal Server Error') ||
++          fetchError?.message?.includes('cloudflare');
+ 
+         const isTimeoutError =
+-          error?.code === 'ETIMEDOUT' ||
+-          error?.errno === 'ETIMEDOUT' ||
+-          error?.type === 'system' ||
+-          error?.message?.includes('ETIMEDOUT') ||
+-          error?.message?.includes('timeout');
++          fetchError?.code === 'ETIMEDOUT' ||
++          fetchError?.errno === 'ETIMEDOUT' ||
++          fetchError?.type === 'system' ||
++          fetchError?.message?.includes('ETIMEDOUT') ||
++          fetchError?.message?.includes('timeout');
+ 
+         const isNetworkError =
+-          error?.code === 'ECONNRESET' ||
+-          error?.code === 'ECONNREFUSED' ||
+-          error?.code === 'ENOTFOUND';
++          fetchError?.code === 'ECONNRESET' ||
++          fetchError?.code === 'ECONNREFUSED' ||
++          fetchError?.code === 'ENOTFOUND';
+ 
+         const shouldRetry =
+@@ -318,7 +327,7 @@ export abstract class SupabaseBaseService {
+ 
+           this.logger.warn(
+-            `⚠️ ${errorType} error lors de ${operationName} (tentative ${attempt}/${maxRetries}): ${error?.message}`,
++            `⚠️ ${errorType} error lors de ${operationName} (tentative ${attempt}/${maxRetries}): ${fetchError?.message}`,
+           );
+           this.onFailure();
+ 
+@@ -331,7 +340,7 @@ export abstract class SupabaseBaseService {
+         } else {
+           // Autre type d'erreur - ne pas réessayer
+           this.logger.error(
+             `❌ Erreur non-retryable lors de ${operationName}:`,
+-            error,
++            fetchError,
+           );
+-          throw error;
++          throw fetchError;
+         }
+       }
+     }

@@ -1,0 +1,30 @@
+{
+  "bundleId": "bundle-typescript-any-elimination-phase2",
+  "version": "1.0.0",
+  "agentId": "main",
+  "priority": "P1",
+  "job": {
+    "job_id": "typescript-any-elimination-phase2",
+    "agent_id": "main",
+    "intent": "Eliminate 'any' types in user-data.service.ts (5) + supabase-base.service.ts (4) - Phase 2 of 933",
+    "scope": "backend/src/database/services/ + backend/src/types/",
+    "timestamp": "2026-02-04T23:14:00.000Z"
+  },
+  "changes": {
+    "filesModified": 2,
+    "filesAdded": 1,
+    "linesChanged": 45,
+    "additions": 60,
+    "deletions": 15
+  },
+  "signature": {
+    "algorithm": "HMAC-SHA256",
+    "hash": "placeholder-will-be-computed",
+    "signedAt": "2026-02-04T23:14:00.000Z"
+  },
+  "constraints": {
+    "maxLinesChanged": 500,
+    "maxFilesModified": 10,
+    "forbiddenPatterns": ["exec_sql"]
+  }
+}
