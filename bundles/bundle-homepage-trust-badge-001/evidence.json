@@ -1,0 +1,19 @@
+{
+  "type": "text-change",
+  "validation": {
+    "syntax": "valid",
+    "typescript": "no-errors",
+    "react": "valid-jsx",
+    "a11y": "no-impact",
+    "seo": "improved"
+  },
+  "testing": {
+    "manual": "Visual inspection recommended",
+    "automated": "Not applicable (text-only change)",
+    "regression": "None expected"
+  },
+  "references": {
+    "related_lines": [68, 237],
+    "context": "Hero section trust badges + meta description alignment"
+  }
+}

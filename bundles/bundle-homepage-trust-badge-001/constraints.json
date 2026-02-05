@@ -1,0 +1,19 @@
+{
+  "enforced": {
+    "maxLinesChanged": 1,
+    "maxFilesModified": 1,
+    "forbiddenPatterns": [],
+    "requiredReview": false
+  },
+  "actual": {
+    "linesChanged": 1,
+    "filesModified": 1,
+    "patternsDetected": [],
+    "breakingChanges": false
+  },
+  "compliance": {
+    "RULE-H3": "READ-ONLY respected (bundle submission only)",
+    "RULE-H4": "NO direct push (human approval required)",
+    "maxConstraints": "PASSED (1/500 lines, 1/10 files)"
+  }
+}

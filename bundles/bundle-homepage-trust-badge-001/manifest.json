@@ -1,0 +1,29 @@
+{
+  "bundleId": "bundle-homepage-trust-badge-001",
+  "version": "1.0.0",
+  "agentId": "main",
+  "priority": "P2",
+  "job": {
+    "job_id": "homepage-trust-badge-harmonization",
+    "agent_id": "main",
+    "intent": "SEO consistency: Harmonize trust badge text with meta description",
+    "scope": "frontend/app/routes/_index.tsx",
+    "timestamp": "2026-02-04T22:54:00.000Z"
+  },
+  "changes": {
+    "filesModified": 1,
+    "linesChanged": 1,
+    "additions": 1,
+    "deletions": 1
+  },
+  "signature": {
+    "algorithm": "HMAC-SHA256",
+    "hash": "placeholder-will-be-computed",
+    "signedAt": "2026-02-04T22:54:00.000Z"
+  },
+  "constraints": {
+    "maxLinesChanged": 500,
+    "maxFilesModified": 10,
+    "forbiddenPatterns": ["exec_sql", "process.env", "require("]
+  }
+}

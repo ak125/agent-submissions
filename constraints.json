@@ -1,0 +1,33 @@
+{
+  "version": "1.0",
+  "constraints": {
+    "security": {
+      "no_docker_socket_mount": true,
+      "no_git_remote_on_monorepo": true,
+      "read_only_governance": true,
+      "container_non_root": true
+    },
+    "deployment": {
+      "target_branch": "main",
+      "require_tests_pass": true,
+      "require_lint_pass": true,
+      "require_typecheck_pass": true
+    },
+    "files": {
+      "allowed_paths": [
+        "backend/src/**",
+        "frontend/app/**",
+        "packages/**"
+      ],
+      "forbidden_paths": [
+        ".env",
+        "*.key",
+        "credentials/**"
+      ]
+    }
+  },
+  "approvals": {
+    "required_before_merge": true,
+    "approvers": ["human"]
+  }
+}

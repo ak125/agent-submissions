@@ -1,0 +1,33 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-02-06T00:00:00Z",
+  "bundle_id": "BUNDLE-XXX",
+  "evidence": {
+    "tests": {
+      "ran": false,
+      "passed": false,
+      "command": "npm test",
+      "output_hash": null
+    },
+    "lint": {
+      "ran": false,
+      "passed": false,
+      "command": "npm run lint"
+    },
+    "typecheck": {
+      "ran": false,
+      "passed": false,
+      "command": "npm run typecheck"
+    },
+    "build": {
+      "ran": false,
+      "passed": false,
+      "command": "npm run build"
+    }
+  },
+  "verification": {
+    "files_reviewed": [],
+    "changes_hash": null,
+    "patch_applies_cleanly": false
+  }
+}
