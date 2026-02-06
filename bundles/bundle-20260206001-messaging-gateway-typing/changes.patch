@@ -1,0 +1,59 @@
+diff --git a/backend/src/modules/messages/messaging.gateway.ts b/backend/src/modules/messages/messaging.gateway.ts
+index a1b2c3d..e4f5g6h 100644
+--- a/backend/src/modules/messages/messaging.gateway.ts
++++ b/backend/src/modules/messages/messaging.gateway.ts
+@@ -15,6 +15,21 @@ interface AuthenticatedSocket extends Socket {
+   userEmail?: string;
+ }
+ 
++/**
++ * Message payload interface for event handlers
++ */
++interface MessagePayload {
++  message: {
++    id: string;
++    content: string;
++    senderId: string;
++    recipientId: string;
++    createdAt: string;
++    readAt?: string;
++    [key: string]: unknown; // Allow additional fields
++  };
++}
++
+ @WebSocketGateway({
+   cors: {
+     origin: ['http://localhost:3000', 'http://localhost:5173'], // Frontend URLs
+@@ -75,7 +90,7 @@ export class MessagingGateway
+         `User ${client.userId} (${client.userEmail}) connected with socket ${client.id}`,
+       );
+ 
+-    } catch (error: any) {
++    } catch (error: unknown) {
+       this.logger.error(`Connection failed: ${error.message}`);
+       client.disconnect();
+     }
+@@ -99,7 +114,7 @@ export class MessagingGateway
+   // Événements émis par le service de messages
+   @OnEvent('message.created')
+   handleMessageCreated(payload: {
+-    message: any;
++    message: MessagePayload['message'];
+     recipientId: string;
+     senderId: string;
+   }) {
+@@ -234,12 +249,12 @@ export class MessagingGateway
+   }
+ 
+   // Méthode pour envoyer un message à un utilisateur spécifique
+-  sendToUser(userId: string, event: string, data: any) {
++  sendToUser(userId: string, event: string, data: Record<string, unknown>) {
+     this.server.to(`user-${userId}`).emit(event, data);
+   }
+ 
+   // Méthode pour broadcaster à tous les utilisateurs connectés
+-  broadcast(event: string, data: any) {
++  broadcast(event: string, data: Record<string, unknown>) {
+     this.server.emit(event, data);
+   }
+ }

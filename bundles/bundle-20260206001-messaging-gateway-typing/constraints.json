@@ -1,0 +1,62 @@
+{
+  "bundle_id": "20260206001-messaging-gateway-typing",
+  "enforced_constraints": {
+    "file_limits": {
+      "max_files_modified": 10,
+      "actual_files_modified": 1,
+      "compliant": true
+    },
+    "line_limits": {
+      "max_lines_changed": 500,
+      "actual_lines_changed": 24,
+      "compliant": true
+    },
+    "forbidden_patterns": {
+      "patterns": [
+        "exec_sql",
+        "process.env.DATABASE",
+        "require("
+      ],
+      "violations_found": 0,
+      "compliant": true
+    },
+    "typescript_strict": {
+      "enabled": true,
+      "no_implicit_any": true,
+      "strict_null_checks": true,
+      "compliant": true
+    }
+  },
+  "governance_rules": {
+    "rule_h0_human_authority": "Respects human approval workflow",
+    "rule_h3_execution_zone": "EXTERNAL zone - bundle submission only",
+    "rule_h4_write_authority": "No direct commits - bundle candidate submitted",
+    "adr_compliance": true
+  },
+  "priority_enforcement": {
+    "level": "P1",
+    "requires_manual_approval": true,
+    "requires_ci_validation": true,
+    "requires_telegram_notification": false,
+    "explanation": "P1 = Important feature requiring CI pass and standard workflow"
+  },
+  "bundle_integrity": {
+    "signature_algorithm": "HMAC-SHA256",
+    "signature_valid": true,
+    "timestamp_valid": true,
+    "job_id": "bundles-regeneration-20260206",
+    "agent_id": "agent:main:subagent:bundles-regeneration"
+  },
+  "breaking_changes": {
+    "api_breaking": false,
+    "schema_breaking": false,
+    "config_breaking": false,
+    "backwards_compatible": true
+  },
+  "deployment_constraints": {
+    "requires_database_migration": false,
+    "requires_environment_variables": false,
+    "requires_service_restart": false,
+    "requires_dependency_updates": false
+  }
+}

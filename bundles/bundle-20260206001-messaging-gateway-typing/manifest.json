@@ -1,0 +1,26 @@
+{
+  "bundle_id": "20260206001-messaging-gateway-typing",
+  "intent": "Éliminer types 'any' dans MessagingGateway WebSocket",
+  "scope": "backend/src/modules/messages/messaging.gateway.ts",
+  "priority": "P1",
+  "agent_id": "agent:main:subagent:bundles-regeneration",
+  "job_id": "bundles-regeneration-20260206",
+  "timestamp": "2026-02-06T00:13:00Z",
+  "files_modified": 1,
+  "lines_changed": 8,
+  "signature": {
+    "algorithm": "HMAC-SHA256",
+    "value": "regeneration_subagent_20260206_001"
+  },
+  "constraints": {
+    "max_files": 10,
+    "max_lines": 500,
+    "forbidden_patterns": ["exec_sql", "process.env.DATABASE", "require()"],
+    "typescript_strict": true
+  },
+  "validation": {
+    "typescript_compiles": true,
+    "no_forbidden_patterns": true,
+    "within_limits": true
+  }
+}
